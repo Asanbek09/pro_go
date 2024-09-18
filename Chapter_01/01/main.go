@@ -1,7 +1,64 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"html/template"
+	"net/http"
+)
+
+type Rsvp struct {
+	Name, Email, Phone string
+	WillAttend         bool
+}
+
+var responses = make([]*Rsvp, 0, 10)
+var templates = make(map[string]*template.Template, 3)
+
+func loadTemplates() {
+	// TODO - load templates here
+	temlateNames := [5]string{"welcome", "form", "thanks", "sorry", "list"}
+	for index, name := range temlateNames {
+		t, err := template.ParseFiles("layout.html", name+".html")
+		if err == nil {
+			templates[name] = t
+			fmt.Println("Loaded template", index, name)
+		} else {
+			panic(err)
+		}
+	}
+}
+
+func welcomeHandler(writer http.ResponseWriter, request *http.Request) {
+	templates["welcome"].Execute(writer, nil)
+}
+
+func listHandler(writer http.ResponseWriter, request *http.Request) {
+	templates["list"].Execute(writer, responses)
+}
+
+type formData struct {
+	*Rsvp
+	Errors []string
+}
+
+func formHandler(writer http.ResponseWriter, request *http.Request) {
+	if request.Method == http.MethodGet {
+		templates["form"].Execute(writer, formData{
+			Rsvp: &Rsvp{}, Errors: []string{},
+		})
+	}
+}
 
 func main() {
-	fmt.Println("TODO: add some features")
+	loadTemplates()
+
+	http.HandleFunc("/", welcomeHandler)
+	http.HandleFunc("/list", listHandler)
+	http.HandleFunc("/form", formHandler)
+	//fmt.Println("TODO: add some features")
+
+	err := http.ListenAndServe(":8001", nil)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
