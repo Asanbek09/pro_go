@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 type Product struct {
 	Name, Category string
 	Price float64
@@ -20,4 +22,8 @@ var Products = []Product {
 	{"cap", "chess", 65.75},
 	{"chair", "chess", 657.40},
 	{"bling king", "chess", 340},
+}
+
+func (p Product) String() string {
+	return fmt.Sprintf("Product: %v, Price: $%4.2f", p.Name, p.Price)
 }
