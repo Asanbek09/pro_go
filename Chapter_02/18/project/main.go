@@ -1,8 +1,17 @@
 package main
 
-import "math"
+import (
+	"math/rand"
+	"time"
+)
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
+	for i := 0; i < 5; i++ {
+		Printfln("Value %v : %v", i, rand.Int())
+	}
+
+/*
 	val1 := 274.00
 	val2 := 564.94
 
@@ -16,4 +25,5 @@ func main() {
 	Printfln("Pow: %v", math.Pow(val1, val2))
 	Printfln("Round: %v", math.Round(val2))
 	Printfln("RoundToEleven: %v", math.RoundToEven(val2))
+*/
 }
