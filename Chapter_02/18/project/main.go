@@ -5,11 +5,39 @@ import (
 	"time"
 )
 
+/*
+func IntRage(min, max int) int {
+	return rand.Intn(max - min) + min
+}
+*/
+
+var names = []string {"Alice", "Bob", "Charlie", "Dora", "Edith"}
+
 func main() {
+
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(names), func (first, second int) {
+		names[first], names[second] = names[second], names[first]
+	})
+
+	for i, name := range names {
+		Printfln("Index %v: Name: %v", i, name)
+	}
+
+/*
 	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < 5; i++ {
-		Printfln("Value %v : %v", i, rand.Int())
+		Printfln("Value %v : %v", i, IntRage(10, 20))
 	}
+*/
+
+/*
+	rand.Seed(time.Now().UnixNano())
+	for i := 0; i < 5; i++ {
+		Printfln("Value %v : %v", i, rand.Intn(10))
+		//Printfln("Value %v : %v", i, rand.Int())
+	}
+*/
 
 /*
 	val1 := 274.00
