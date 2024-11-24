@@ -13,23 +13,127 @@ func PrintTime(label string, t *time.Time) {
 }
 */
 
-func writeChannel(channel chan <- string) {
+func writeChannel(nameChannel chan <- string) {
+
+	names := []string {"alice", "bob", "charlie", "dora"}
+
+	//tickChannel := time.Tick(time.Second)
+	ticker := time.NewTicker(time.Second / 10)
+	index := 0
+
+	for {
+		//<- tickChannel
+		<- ticker.C
+		nameChannel <- names[index]
+		index++
+		if (index == len(names)) {
+			//index = 0
+			ticker.Stop()
+			close(nameChannel)
+			break
+		}
+	}
+	
+	/*
+	timer := time.NewTimer(time.Minute * 10)
+
+	go func() {
+		time.Sleep(time.Second * 2)
+		Printfln("Resetting timer")
+		timer.Reset(time.Second)
+	}()
+
+	Printfln("Waiting for initial duration...")
+	<- timer.C
+	Printfln("Initial duration elapsed")
+
+	names := []string {"alice", "bob", "charlie", "dora"}
+	for _, name := range names {
+		channel <- name
+	}
+	close(channel)
+	*/
+
+	/*
+	Printfln("Waiting for initial duration...")
+	_ = <- time.After(time.Second * 2)
+	Printfln("Initial duration elapsed")
+
 	names := []string {"Alice", "Bob", "Charlie", "Dora"}
 	for _, name := range names {
 		channel <- name
-		time.Sleep(time.Second * 1)
+		time.Sleep(time.Second * 3)
 	}
 	close(channel)
+	*/
+
+	/*
+	names := []string {"Alice", "Bob", "Charlie", "Dora"}
+	for _, name := range names {
+		channel <- name
+		//time.Sleep(time.Second * 1)
+	}
+	close(channel)
+	*/
 }
 
 func main() {
-	
 	nameChannel := make (chan string)
 
 	go writeChannel(nameChannel)
+
 	for name := range nameChannel {
 		Printfln("Read name: %v", name)
 	}
+}
+
+	/*
+	nameChannel := make (chan string)
+	go writeChannel(nameChannel)
+
+	for name := range nameChannel {
+		Printfln("Read name: %v", name)
+	}
+	*/
+	/*
+	nameChannel := make (chan string)
+
+	go writeChannel(nameChannel)
+
+	channelOpen := true
+	for channelOpen {
+		Printfln("Starting channel read")
+		select {
+		case name, ok := <- nameChannel:
+			if (!ok) {
+				channelOpen = false
+				break
+			} else {
+				Printfln("Read name: %v", name)
+			}
+		case <- time.After(time.Second * 2):
+			Printfln("Timeout")
+		}
+	}
+	*/
+
+	/*
+	for name := range nameChannel {
+		Printfln("Read name: %v", name)
+	}
+	*/
+
+	/*
+	nameChannel := make (chan string)
+	go writeChannel(nameChannel)
+
+	time.AfterFunc(time.Second * 5, func() {
+		writeChannel(nameChannel)
+	})
+	for name := range nameChannel {
+		Printfln("Read name: %v", name)
+	}
+	*/
 
 	/*
 	d, err := time.ParseDuration("1h30m")
@@ -175,4 +279,3 @@ func main() {
 	PrintTime("Specific", &specific)
 	PrintTime("Unix", &unix)
 	*/
-}
