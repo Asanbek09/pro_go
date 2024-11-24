@@ -1,23 +1,85 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 	"time"
 )
 
+/*
 func PrintTime(label string, t *time.Time) {
 	//layout := "Day: 02 Month: Jan Year: 2006"
 	fmt.Println(label, t.Format(time.RFC822Z))
 	//Printfln("%s: Day: %v: Month: %v Year: %v", label, t.Day(), t.Month(), t.Year())
 }
+*/
+
+func writeChannel(channel chan <- string) {
+	names := []string {"Alice", "Bob", "Charlie", "Dora"}
+	for _, name := range names {
+		channel <- name
+		time.Sleep(time.Second * 1)
+	}
+	close(channel)
+}
 
 func main() {
+	
+	nameChannel := make (chan string)
 
+	go writeChannel(nameChannel)
+	for name := range nameChannel {
+		Printfln("Read name: %v", name)
+	}
+
+	/*
+	d, err := time.ParseDuration("1h30m")
+	if( err == nil) {
+		Printfln("Hours: %v", d.Hours())
+		Printfln("Minutes: %v", d.Minutes())
+		Printfln("Seconds: %v", d.Seconds())
+		Printfln("MilliSeconds: %v", d.Milliseconds())
+	} else {
+		fmt.Println(err.Error())
+	}
+	*/
+
+	/*
+	toYears := func(d time.Duration) int {
+		return int(d.Hours() / (24 * 365))
+	}
+
+	future := time.Date(2051, 0, 0, 0, 0, 0, 0, time.Local)
+	past := time.Date(1965, 0, 0, 0, 0, 0, 0, time.Local)
+
+	Printfln("Future: %v", toYears(time.Until(future)))
+	Printfln("Past: %v", toYears(time.Since(past)))
+	*/
+
+	/*
+	var d time.Duration = time.Hour + (30 * time.Minute) 
+
+	Printfln("Hours: %v", d.Hours())
+	Printfln("Mins: %v", d.Minutes())
+	Printfln("Seconds: %v", d.Seconds())
+	Printfln("Milliseconds: %v", d.Milliseconds())
+
+	rounded := d.Round(time.Hour)
+	Printfln("Rounded Hours: %v", rounded.Hours())
+	Printfln("Rounded Mins: %v", rounded.Minutes())
+
+	trunc := d.Truncate(time.Hour)
+
+	Printfln("Truncated Hours: %v", trunc.Hours())
+	Printfln("Rounded Mins: %v", trunc.Minutes())
+	*/
+
+	/*
 	t1, _ := time.Parse(time.RFC822Z, "09 Jun 95 04:59 +0100")
 	t2, _ := time.Parse(time.RFC822Z, "08 Jun 95 23:59 -0400")
 
 	Printfln("Equal Method: %v", t1.Equal(t2))
 	Printfln("Equality Operator: %v", t1 == t2)
+	*/
 
 	/*
 	t, err := time.Parse(time.RFC822, "09 Jun 95 04:59 BST")
