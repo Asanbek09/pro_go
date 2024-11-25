@@ -1,9 +1,9 @@
 package main
 
 import (
-	"io"
+	//"io"
 	"strings"
-	"bufio"
+	//"bufio"
 )
 
 /*
@@ -32,17 +32,36 @@ func processData(reader io.Reader, writer io.Writer) {
 	*/
 
 func main() {
+	text := "It was a boat. A small boat."
 
+	var builder strings.Builder
+	var writer = NewCustomWriter(&builder)
+	for i := 0; true; {
+		end := i + 5
+		if (end >= len(text)) {
+			writer.Write([]byte(text[i:]))
+			break
+		}
+		writer.Write([]byte(text[i:end]))
+		i = end
+	}
+	Printfln("Written data: %v", builder.String())
+}
+
+/*
 	text := "It was a boat. A small boat."
 	var reader io.Reader = NewCustomReader(strings.NewReader(text))
 	var writer strings.Builder
 	slice := make([]byte, 5)
 
-	reader = bufio.NewReader(reader)
-
+	//reader = bufio.NewReader(reader)
+	buffered := bufio.NewReader(reader)
+	
 	for {
-		count, err := reader.Read(slice)
+		//count, err := reader.Read(slice)
+		count, err := buffered.Read(slice)
 		if (count > 0) {
+			Printfln("Buffer size: %v, buffered: %v", buffered.Size(), buffered.Buffered())
 			writer.Write(slice[0:count])
 		}
 		if (err != nil) {
@@ -50,6 +69,8 @@ func main() {
 		}
 	}
 	Printfln("Read data: %v", writer.String())
+	*/
+
 	/*
 	r1 := strings.NewReader("kayak")
 	r2 := strings.NewReader("jacket")
@@ -117,4 +138,3 @@ func main() {
 	processData(r, &builder)
 	Printfln("String builder contents: %s", builder.String())
 	*/
-}
