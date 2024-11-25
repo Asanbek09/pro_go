@@ -16,6 +16,9 @@ func GenerateData(writer io.Writer) {
 			Printfln("Error: %v", err.Error())
 		}
 	}
+	if closer, ok := writer.(io.Closer); ok {
+		closer.Close()
+	}
 }
 
 func ConsumeData(reader io.Reader) {
