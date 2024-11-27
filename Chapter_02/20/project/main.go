@@ -46,13 +46,27 @@ func writeFormatted(writer io.Writer, template string, vals ...interface{}) {
 	fmt.Fprintf(writer, template, vals...)
 }
 
+func writeReplacer(writer io.Writer, str string, subs ...string) {
+	replacer := strings.NewReplacer(subs...)
+	replacer.WriteString(writer, str)
+}
+
 func main() {
+	text := "It was a boat. A small boat"
+	subs := []string {"boat", "kayak", "small", "huge"}
+
+	var writer strings.Builder
+	writeReplacer(&writer, text, subs...)
+	fmt.Println(writer.String())
+}
+
+/*
 	var writer strings.Builder
 	template := "Name: %s, Category: %s, Price: $%.2f"
 
 	writeFormatted(&writer, template, "Kayak", "water sports", float64(289))
 	fmt.Println(writer.String())
-}
+*/
 
 /*
 reader := strings.NewReader("kayak watersports $284.90")
