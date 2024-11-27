@@ -1,9 +1,10 @@
 package main
 
 import (
-	//"io"
+	"io"
 	"strings"
 	//"bufio"
+	"fmt"
 )
 
 /*
@@ -31,22 +32,80 @@ func processData(reader io.Reader, writer io.Writer) {
 	}
 	*/
 
+/*
+func scanFromReader(reader io.Reader, template string, vals ...interface{}) (int, error) {
+	return fmt.Fscanf(reader, template, vals...)
+}
+
+func scanSingle(reader io.Reader, val interface{}) (int, error) {
+	return fmt.Fscan(reader, val)
+}
+*/
+
+func writeFormatted(writer io.Writer, template string, vals ...interface{}) {
+	fmt.Fprintf(writer, template, vals...)
+}
+
 func main() {
-	text := "It was a boat. A small boat."
+	var writer strings.Builder
+	template := "Name: %s, Category: %s, Price: $%.2f"
+
+	writeFormatted(&writer, template, "Kayak", "water sports", float64(289))
+	fmt.Println(writer.String())
+}
+
+/*
+reader := strings.NewReader("kayak watersports $284.90")
+
+	for {
+		var str string
+		_, err := scanSingle(reader, &str)
+		if (err != nil) {
+			if (err != io.EOF) {
+				Printfln("Error: %v", err.Error())
+			}
+			break
+		}
+		Printfln("Value: %v", str)
+	}
+*/
+
+/*
+reader := strings.NewReader("kayak watersports $279.45")
+
+	var name, category string
+	var price float64
+	scanTemplate := "%s %s $%f"
+
+	_, err := scanFromReader(reader, scanTemplate, &name, &category, &price)
+	if (err != nil) {
+		Printfln("Error: %v", err.Error())
+	} else {
+		Printfln("Name: %v", name)
+		Printfln("Category: %v", category)
+		Printfln("Price: %.2f", price)
+	}
+*/
+
+/*
+text := "It was a boat. A small boat."
 
 	var builder strings.Builder
-	var writer = NewCustomWriter(&builder)
+	var writer = bufio.NewWriterSize(NewCustomWriter(&builder), 20)
+	//var writer = NewCustomWriter(&builder)
+	
 	for i := 0; true; {
 		end := i + 5
 		if (end >= len(text)) {
 			writer.Write([]byte(text[i:]))
+			writer.Flush()
 			break
 		}
 		writer.Write([]byte(text[i:end]))
 		i = end
 	}
 	Printfln("Written data: %v", builder.String())
-}
+*/
 
 /*
 	text := "It was a boat. A small boat."
