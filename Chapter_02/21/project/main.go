@@ -25,7 +25,17 @@ func main() {
 	}
 
 	for _, val := range vals {
-		Printfln("Decoded (%T): %v", val, val)
+		if num, ok := val.(json.Number); ok {
+			if ival, err := num.Int64(); err == nil {
+				Printfln("Decoded Integer: %v", ival)
+			} else if fpval, err := num.Float64(); err == nil {
+				Printfln("Decoded floating point: %v", fpval)
+			} else {
+				Printfln("Decoded String: %v", num.String())
+			}
+		} else {
+			Printfln("Decoded (%T): %v", val, val)
+		}
 	}
 
 
