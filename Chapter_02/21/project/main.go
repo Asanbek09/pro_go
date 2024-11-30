@@ -3,10 +3,31 @@ package main
 import (
 	"encoding/json"
 	"strings"
-	"io"
+	//"io"
 )
 
 func main() {
+	reader := strings.NewReader(`[10, 20, 30]["kayak", "jacket", 243]`)
+
+	ints := []int {}
+	mixed := []interface{} {}
+
+	vals := []interface{} { &ints, &mixed }
+
+	decoder := json.NewDecoder(reader)
+
+	for i := 0; i < len(vals); i++ {
+		err := decoder.Decode(vals[i])
+		if err != nil {
+			Printfln("Error: %v", err.Error())
+			break
+		}
+	}
+	Printfln("Decoded: (%T) %v", ints, ints)
+	Printfln("decoded: (%T) %v", mixed, mixed)
+}
+
+	/*
 	reader := strings.NewReader(`[10, 20, 30]["kayak", "jacket", 254]`)
 	
 	vals := []interface{} { }
@@ -28,7 +49,7 @@ func main() {
 	for _, val := range vals {
 		Printfln("Decoded (%T): %v", val, val)
 	}
-}
+	*/
 
 	/*
 	reader := strings.NewReader(`true "Hello" 99.99 200`)
