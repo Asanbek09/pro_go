@@ -1,12 +1,35 @@
 package main
 
 import (
-	"strings"
-	"fmt"
 	"encoding/json"
+	"io"
+	"strings"
 )
 
 func main() {
+	reader := strings.NewReader(`true "Hello" 99.99 200`)
+	vals := []interface{} { }
+
+	decoder := json.NewDecoder(reader)
+
+	for {
+		var decodedVal interface{}
+		err := decoder.Decode(&decodedVal)
+		if (err != nil) {
+			if(err != io.EOF) {
+				Printfln("Error: %v", err.Error())
+			}
+			break
+		}
+		vals = append(vals, decodedVal)
+	}
+
+	for _, val := range vals {
+		Printfln("Decoded (%T): %v", val, val)
+	}
+
+
+	/*
 	var writer strings.Builder
 	encoder := json.NewEncoder(&writer)
 	dp := DiscountedProduct {
@@ -16,12 +39,13 @@ func main() {
 	
 	namedItems := []Named {&dp, &Person{PersonName: "Alice"}}
 	encoder.Encode(namedItems)
+	
+	//fmt.Print(writer.String())
+	*/
 
 	//encoder.Encode(&dp)
 	//dp2 := DiscountedProduct {Discount: 10.45}
 	//encoder.Encode(&dp2)
-
-	fmt.Print(writer.String())
 
 	/*
 	var writer strings.Builder
