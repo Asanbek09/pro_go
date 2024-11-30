@@ -8,13 +8,16 @@ import (
 )
 
 func main() {
-	reader := strings.NewReader(`{"Name": "kayak", "Category": "Water sports", "Price": 274}
-	{"Name": "jacket", "Category": "leather"} {"name": "canoe", "category": "water sports", "price": 100, "inStock": true}`)	
+	//reader := strings.NewReader(`{"Name": "kayak", "Category": "Water sports", "Price": 274}
+	//{"Name": "jacket", "Category": "leather"} {"name": "canoe", "category": "water sports", "price": 100, "inStock": true}`)	
+
+	reader := strings.NewReader(`{"Name": "kayak", "Category": "water sports", "Price": 254, "Offer": "25"}`)
 
 	decoder := json.NewDecoder(reader)
 
 	for {
-		var val Product
+		//var val Product
+		var val DiscountedProduct
 		err := decoder.Decode(&val)
 		if err != nil {
 			if err != io.EOF {
@@ -22,7 +25,8 @@ func main() {
 			}
 			break
 		} else {
-			Printfln("Name: %v, Category: %v, Price: %v", val.Name, val.Category, val.Price)
+			//Printfln("Name: %v, Category: %v, Price: %v", val.Name, val.Category, val.Price)
+			Printfln("Name: %v, Category: %v, Price: %v, Discount: %v", val.Name, val.Category, val.Price, val.Discount)
 		}
 	}
 }
