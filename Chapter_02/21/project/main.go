@@ -7,7 +7,26 @@ import (
 )
 
 func main() {
-	reader := strings.NewReader(`[10, 20, 30]["kayak", "jacket", 243]`)
+	reader := strings.NewReader(`{"kayak": 245, "jacket": 28.94}`)
+
+	//m := map[string]interface{} {}
+	m := map[string]float64 {}
+
+	decoder := json.NewDecoder(reader)
+
+	err := decoder.Decode(&m)
+	if err != nil {
+		Printfln("Error: %v", err.Error())
+	} else {
+		Printfln("Map: %T, %v", m, m)
+		for k, v := range m {
+			Printfln("Key: %v, Value: %v", k, v)
+		}
+	}
+}
+
+/*
+reader := strings.NewReader(`[10, 20, 30]["kayak", "jacket", 243]`)
 
 	ints := []int {}
 	mixed := []interface{} {}
@@ -25,7 +44,7 @@ func main() {
 	}
 	Printfln("Decoded: (%T) %v", ints, ints)
 	Printfln("decoded: (%T) %v", mixed, mixed)
-}
+*/
 
 	/*
 	reader := strings.NewReader(`[10, 20, 30]["kayak", "jacket", 254]`)
