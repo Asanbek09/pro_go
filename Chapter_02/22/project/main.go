@@ -1,13 +1,32 @@
 package main
 
 import (
-	"fmt"
-	"time"
+	//"fmt"
+	//"time"
 	"os"
+	"encoding/json"
 )
 
 func main() {
-	total := 0.0
+	cheapProducts := []Product {}
+	for _, p := range Products {
+		if (p.Price < 100) {
+			cheapProducts = append(cheapProducts, p)
+		}
+	}
+
+	file, err := os.OpenFile("cheap.json", os.O_WRONLY | os.O_CREATE, 0666)
+	if (err == nil) {
+		defer file.Close()
+		encoder := json.NewEncoder(file)
+		encoder.Encode(cheapProducts)
+	} else {
+		Printfln("Error: %v", err.Error())
+	}
+}
+
+/*
+total := 0.0
 	for _, p := range Products {
 		total += p.Price
 	}
@@ -22,7 +41,7 @@ func main() {
 	} else {
 		Printfln("Error: %v", err.Error())
 	}
-}
+*/
 
 /*
 total := 0.0

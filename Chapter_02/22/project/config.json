@@ -1,5 +1,5 @@
 {
-    "Username": "Alice",
+    "UserName": "Alice",
     "AdditionalProducts": [
         {"name": "Hat", "category": "Skiing", "price": 10},
         {"name": "Boots", "category": "Skiing", "price": 220.59},
