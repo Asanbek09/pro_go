@@ -5,11 +5,40 @@ import (
 	//"time"
 	//"encoding/json"
 	"os"
-	//"path/filepath"
+	"path/filepath"
 )
 
 func main() {
 	path, err := os.Getwd()
+	if (err == nil) {
+		matches, err := filepath.Glob(filepath.Join(path, "*.json"))
+		if (err == nil) {
+			for _, m := range matches {
+				Printfln("Match: %v", m)
+			}
+		}
+	}
+	if (err != nil) {
+		Printfln("Error: %v", err.Error())
+	}
+}
+
+/*
+targetFiles := []string {"no_such_file.txt", "config.json"}
+	for _, name := range targetFiles {
+		info, err := os.Stat(name)
+		if os.IsNotExist(err) {
+			Printfln("File does not exist: %v", name)
+		} else if err != nil {
+			Printfln("Other error: %v", err.Error())
+		} else {
+			Printfln("File: %v, Size: %v", info.Name(), info.Size())
+		}
+	}
+*/
+
+/*
+path, err := os.Getwd()
 	if (err == nil) {
 		dirEntries, err := os.ReadDir(path)
 		if (err == nil) {
@@ -21,7 +50,8 @@ func main() {
 	if (err != nil) {
 		Printfln("Error: %v", err.Error())
 	}
-}
+*/
+
 /*
 path, err := os.UserHomeDir()
 	if err == nil {
