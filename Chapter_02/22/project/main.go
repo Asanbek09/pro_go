@@ -3,12 +3,26 @@ package main
 import (
 	//"fmt"
 	//"time"
-	"encoding/json"
+	//"encoding/json"
 	"os"
+	"path/filepath"
 )
 
 func main() {
-	cheapProducts := []Product{}
+	path, err := os.UserHomeDir()
+	if err == nil {
+		path = filepath.Join(path, "MyApp", "MyTempFile.json")
+	}
+
+	Printfln("Full path: %v", path)
+	Printfln("Volume name: %v", filepath.VolumeName(path))
+	Printfln("Dir component: %v", filepath.Dir(path))
+	Printfln("File component: %v", filepath.Base(path))
+	Printfln("File extension: %v", filepath.Ext(path))
+}
+
+/*
+cheapProducts := []Product{}
 	for _, p := range Products {
 		if p.Price < 100 {
 			cheapProducts = append(cheapProducts, p)
@@ -23,7 +37,7 @@ func main() {
 	} else {
 		Printfln("Error: %v", err.Error())
 	}
-}
+*/
 
 /*
 cheapProducts := []Product {}
