@@ -3,13 +3,27 @@ package main
 import (
 	//"fmt"
 	//"time"
-	"encoding/json"
+	//"encoding/json"
 	"os"
-	"path/filepath"
+	//"path/filepath"
 )
 
 func main() {
-	path, err := os.UserHomeDir()
+	path, err := os.Getwd()
+	if (err == nil) {
+		dirEntries, err := os.ReadDir(path)
+		if (err == nil) {
+			for _, dentry := range dirEntries {
+				Printfln("Entry name: %v, IsDir: %v", dentry.Name(), dentry.IsDir())
+			}
+		}
+	}
+	if (err != nil) {
+		Printfln("Error: %v", err.Error())
+	}
+}
+/*
+path, err := os.UserHomeDir()
 	if err == nil {
 		path = filepath.Join(path, "MyApp", "MyTempFile.json")
 	}
@@ -28,12 +42,12 @@ func main() {
 	if(err != nil) {
 		Printfln("Error: %v", err.Error())
 	}
+*/
 
-	//Printfln("Volume name: %v", filepath.VolumeName(path))
-	//Printfln("Dir component: %v", filepath.Dir(path))
-	//Printfln("File component: %v", filepath.Base(path))
-	//Printfln("File extension: %v", filepath.Ext(path))
-}
+//Printfln("Volume name: %v", filepath.VolumeName(path))
+//Printfln("Dir component: %v", filepath.Dir(path))
+//Printfln("File component: %v", filepath.Base(path))
+//Printfln("File extension: %v", filepath.Ext(path))
 
 /*
 cheapProducts := []Product{}
