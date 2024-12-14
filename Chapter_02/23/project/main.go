@@ -10,12 +10,12 @@ func Exec(t *template.Template) error {
 }
 
 func main() {
-	allTemplates, err := template.ParseGlob("templates/*.html")
-	if(err == nil) {
-		selectedTemplated := allTemplates.Lookup("template.html")
+	allTemplates, err := template.ParseFiles("templates/template.html", "templates/list.html")
+	if err == nil {
+		selectedTemplated := allTemplates.Lookup("mainTemplate")
 		err = Exec(selectedTemplated)
 	}
-	if (err != nil) {
+	if err != nil {
 		Printfln("Error: %v", err.Error())
 	}
 }
