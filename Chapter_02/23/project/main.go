@@ -1,7 +1,8 @@
 package main
 
 import (
-	"html/template"
+	//"html/template"
+	"text/template"
 	"os"
 	"strings"
 	//"slices"
@@ -32,7 +33,7 @@ func main() {
 		"getCats": GetCategories,
 		"lower": strings.ToLower,
 	})
-	allTemplates, err := allTemplates.ParseGlob("templates/*.html")
+	allTemplates, err := allTemplates.ParseGlob("templates/*.txt")
 	//allTemplates, err := template.ParseFiles("templates/template.html", "templates/list.html")
 	if err == nil {
 		selectedTemplated := allTemplates.Lookup("mainTemplate")
