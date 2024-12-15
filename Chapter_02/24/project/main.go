@@ -10,19 +10,15 @@ type StringHandler struct {
 
 func (sh StringHandler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	Printfln("Request for %v", request.URL.Path)
-	switch request.URL.Path {
-	case "/favicon.ico":
-		http.NotFound(writer, request)
-	case "/message":
-		io.WriteString(writer, sh.message)
-	default:
-		http.Redirect(writer, request, "/message", http.StatusTemporaryRedirect)
-	}
+	io.WriteString(writer, sh.message)
 }
 
 func main() {
-	err := http.ListenAndServe(":5050", StringHandler{message: "Hello, World!!!!"})
+	http.Handle("/message", StringHandler{ "Hello, World!!!!" })
+	http.Handle("/favicon.ico", http.NotFoundHandler())
+	http.Handle("/", http.RedirectHandler("/message", http.StatusTemporaryRedirect))
 
+	err := http.ListenAndServe(":5050", nil)
 	if (err != nil) {
 		Printfln("Error: %v", err.Error())
 	}
