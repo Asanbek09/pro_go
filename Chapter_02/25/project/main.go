@@ -7,25 +7,36 @@ import (
 	"io"
 	//"encoding/json"
 	//"strings"
-	"net/url"
+	//"net/url"
 	//"net/http/cookiejar"
 	//"fmt"
+	"mime/multipart"
+	"bytes"
 )
 
 func main() {
 	go http.ListenAndServe(":5550", nil)
 	time.Sleep(time.Second)
 
-	http.DefaultClient.CheckRedirect = func(req *http.Request, previous []*http.Request) error {
-		if(len(previous) == 3) {
-			url, _ := url.Parse("http://localhost:5550/html")
-			req.URL = url
+	var buffer bytes.Buffer
+	formWriter := multipart.NewWriter(&buffer)
+	fieldWriter, err := formWriter.CreateFormField("name")
+	if (err == nil) {
+		io.WriteString(fieldWriter, "New York")
+	}
+	fileWriter, err := formWriter.CreateFormFile("codeFile", "printer.go")
+	if(err == nil) {
+		fileData, err := os.ReadFile("./printer.go")
+		if(err == nil) {
+			fileWriter.Write(fileData)
 		}
-		return nil
 	}
 
-	req, err := http.NewRequest(http.MethodGet, "http://localhost:5550/redirect1", nil)
-	if (err == nil) {
+	formWriter.Close()
+	req, err := http.NewRequest(http.MethodPost, "http://localhost:5550/form", &buffer)
+	req.Header["Content-Type"] = []string{formWriter.FormDataContentType()}
+
+	if(err == nil) {
 		var response *http.Response
 		response, err = http.DefaultClient.Do(req)
 		if (err == nil) {
