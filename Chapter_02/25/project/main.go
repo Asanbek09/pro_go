@@ -5,21 +5,24 @@ import (
 	"os"
 	"time"
 	"io"
-	"encoding/json"
-	"strings"
+	//"encoding/json"
+	//"strings"
 	//"net/url"
+	"net/http/cookiejar"
 )
 
 func main() {
 	go http.ListenAndServe(":5550", nil)
 	time.Sleep(time.Second)
 
-	var builder strings.Builder
-	err := json.NewEncoder(&builder).Encode(Products[0])
+	jar, err := cookiejar.New(nil)
 	if (err == nil) {
-		req, err := http.NewRequest(http.MethodPost, "http://localhost:5550/echo", io.NopCloser(strings.NewReader(builder.String())))
+		http.DefaultClient.Jar = jar
+	}
+
+	for i := 0; i < 3; i++ {
+		req, err := http.NewRequest(http.MethodGet, "http://localhost:5550/cookie", nil)
 		if (err == nil) {
-			req.Header["Content-Type"] = []string{"application/json"}
 			response, err := http.DefaultClient.Do(req)
 			if (err == nil && response.StatusCode == http.StatusOK) {
 				io.Copy(os.Stdout, response.Body)
@@ -30,7 +33,5 @@ func main() {
 		} else {
 			Printfln("Request Init Error: %v", err.Error())
 		}
-	} else {
-		Printfln("Encoder Error: %v", err.Error())
 	}
 }
