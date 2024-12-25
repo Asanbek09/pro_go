@@ -16,9 +16,11 @@ func main() {
 	go http.ListenAndServe(":5550", nil)
 	time.Sleep(time.Second)
 
+	jar, err := cookiejar.New(nil)
+
 	clients := make([]http.Client, 3)
 	for index, client := range clients {
-		jar, err := cookiejar.New(nil)
+		//jar, err := cookiejar.New(nil)
 		if (err == nil) {
 			client.Jar = jar
 		}
