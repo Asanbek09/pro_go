@@ -2,21 +2,26 @@ package main
 
 import "database/sql"
 
+type Category struct {
+	Id int
+	Name string
+}
+
 type Product struct {
 	Id int
 	Name string
-	Category int
+	Category
 	Price float64
 }
 
 func queryDatabase(db *sql.DB) []Product {
 	products := []Product {}
-	rows, err := db.Query("Select * from Products")
+	rows, err := db.Query(`select products.id, products.name, products.price, categories.id as cat_id, categories.name as catname from products, categories where products.category = categories.id `)
 	if (err == nil) {
-		for (rows.Next()) {
+		for(rows.Next()) {
 			p := Product{}
-			scanErr := rows.Scan(&p.Id, &p.Name, &p.Category, &p.Price)
-			if(scanErr == nil) {
+			scanErr := rows.Scan(&p.Id, &p.Name, &p.Price, &p.Category.Id, &p.Category.Name)
+			if (scanErr == nil) {
 				products = append(products, p)
 			} else {
 				Printfln("Scan error: %v", scanErr)
