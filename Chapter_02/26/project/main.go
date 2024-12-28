@@ -14,36 +14,27 @@ type Product struct {
 	Price float64
 }
 
-func queryDatabase(db *sql.DB, categoryName string) []Product {
-	products := []Product {}
-	rows, err := db.Query(`select products.id, products.name, products.price, categories.id as cat_id, categories.name as catname from products, categories where products.category = categories.id and categories.name=?`, categoryName)
-	if(err == nil) {
-		for (rows.Next()) {
-			p := Product{}
-			scanErr := rows.Scan(&p.Id, &p.Name, &p.Price, &p.Category.Id, &p.Category.Name)
-			if(scanErr == nil) {
-				products = append(products, p)
-			} else {
-				Printfln("Scan error: %v", scanErr)
-				break
-			}
+func queryDatabase(db *sql.DB, id int) (p Product) {
+	row := db.QueryRow(`select products.id, products.name, products.price, categories.id as cat_id, 
+	categories.name as catname from products, categories 
+	where products.category = categories.id and products.id = ?`, id)
+	if(row.Err() == nil) {
+		scanErr := row.Scan(&p.Id, &p.Name, &p.Price, &p.Category.Id, &p.Category.Name)
+		if (scanErr != nil) {
+			Printfln("Scan error: %v", scanErr)
 		}
 	} else {
-		Printfln("Error: %v", err)
+		Printfln("Row error: %v", row.Err().Error())
 	}
-	return products
+	return
 }
 
 func main() {
-	//listDrivers()
 	db, err := openDatabase()
-	if(err == nil) {
-		for _, cat := range []string {"Soccer", "Watersports"} {
-			Printfln("-----%v Results -----", cat)
-			products := queryDatabase(db, cat)
-			for i, p := range products {
-				Printfln("#%v: %v %v %v", i, p.Name, p.Category, p.Category.Name, p.Price)
-			}
+	if (err == nil) {
+		for _, id := range []int {1, 3, 10} {
+			p := queryDatabase(db, id)
+			Printfln("Product: %v", p)
 		}
 		db.Close()
 	} else {
