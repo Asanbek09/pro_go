@@ -1,6 +1,9 @@
 package main
 
-import "database/sql"
+import (
+	"database/sql"
+	//"go/printer"
+)
 
 type Category struct {
 	Id int
@@ -29,13 +32,28 @@ func queryDatabase(db *sql.DB, id int) (p Product) {
 	return
 }
 
+func insertRow(db *sql.DB, p *Product) (id int64) {
+	res, err := db.Exec(`
+	insert into products(name, category, price)
+	values(?, ?, ?)`, p.Name, p.Category.Id, p.Price)
+	if(err == nil) {
+		id, err = res.LastInsertId()
+		if (err != nil) {
+			Printfln("Result Error: %v", err.Error())
+		}
+	} else {
+		Printfln("Exec Error: %v", err.Error())
+	}
+	return
+}
+
 func main() {
 	db, err := openDatabase()
 	if (err == nil) {
-		for _, id := range []int {1, 3, 10} {
-			p := queryDatabase(db, id)
-			Printfln("Product: %v", p)
-		}
+		newProduct := Product {Name: "Statidum", Category: Category{Id:2}, Price: 79500}
+		newId := insertRow(db, &newProduct)
+		p := queryDatabase(db, int(newId))
+		Printfln("New Product: %v", p)
 		db.Close()
 	} else {
 		panic(err)
