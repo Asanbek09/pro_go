@@ -6,6 +6,7 @@ import (
 	//"fmt"
 )
 var intPtrType = reflect.TypeOf((*int)(nil))
+var byteSliceType = reflect.TypeOf([]byte(nil))
 
 func printDetails(values ...interface{}) {
 	for _, elem := range values {
@@ -13,6 +14,8 @@ func printDetails(values ...interface{}) {
 		elemType := reflect.TypeOf(elem)
 		if (elemType == intPtrType) {
 			Printfln("Pointer to Int: %v", elemValue.Elem().Int())
+		} else if (elemType == byteSliceType){
+			Printfln("Byte slice: %v", elemValue.Bytes())
 		} else {
 			switch elemValue.Kind() {
 			case reflect.Bool:
@@ -44,5 +47,6 @@ func main() {
 		Name: "kayak", Category: "water sports", Price: 289,
 	}
 	number := 100
-	printDetails(true, 10, 20.50, "alice", &number, product)
+	slice := []byte("Alice")
+	printDetails(true, 10, 20.50, "Alice", &number, product, slice)
 }
