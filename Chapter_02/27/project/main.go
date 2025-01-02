@@ -9,6 +9,9 @@ import (
 func incrementOrUpper(values ...interface{}) {
 	for _, elem := range values {
 		elemValue := reflect.ValueOf(elem)
+		if (elemValue.Kind() == reflect.Ptr) {
+			elemValue = elemValue.Elem()
+		}
 		if (elemValue.CanSet()) {
 			switch (elemValue.Kind()) {
 			case reflect.Int:
@@ -28,7 +31,7 @@ func main() {
 	price := 255
 	city := "London"
 
-	incrementOrUpper(name, price, city)
+	incrementOrUpper(&name, &price, &city)
 	for _, val := range []interface{} {name, price, city} {
 		Printfln("Value: %v", val)
 	}
