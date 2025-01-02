@@ -6,24 +6,18 @@ import (
 	//"fmt"
 )
 
-func pickValues(slice interface{}, indices ...int) interface{} {
-	sliceVal := reflect.ValueOf(slice)
-	if (sliceVal.Kind() == reflect.Slice) {
-		newSlice := reflect.MakeSlice(sliceVal.Type(), 0, 10)
-		for _, index := range indices {
-			newSlice = reflect.Append(newSlice, sliceVal.Index(index))
-		}
-		return newSlice
+func describeMap(m interface{}) {
+	mapType := reflect.TypeOf(m)
+	if (mapType.Kind() == reflect.Map) {
+		Printfln("Key type: %v, Val type: %v", mapType.Key(), mapType.Elem())
+	} else {
+		Printfln("Not a map")
 	}
-	return nil
 }
 
 func main() {
-	name := "Alice"
-	city := "London"
-	hobby := "Running"
-
-	slice := []string {name, city, hobby, "Bob", "Paris", "Soccer"}
-	picked := pickValues(slice, 0, 3, 5)
-	Printfln("Picked values: %v", picked)
+	pricesMap := map[string]float64 {
+		"kayak": 299, "jacket": 45.98, "soccer ball": 15.69,
+	}
+	describeMap(pricesMap)
 }
