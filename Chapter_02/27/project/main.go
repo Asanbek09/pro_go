@@ -1,8 +1,13 @@
 package main
 
-func printDetails(values ...Product) {
+func printDetails(values ...interface{}) {
 	for _, elem := range values {
-		Printfln("Product - Name: %v, Category: %v, Price: %v", elem.Name, elem.Category, elem.Price)
+		switch val := elem.(type) {
+		case Product:
+			Printfln("Product - Name: %v, Cateory: %v, Price: %v", val.Name, val.Category, val.Price)
+		case Customer:
+			Printfln("Customer - Name: %v, City: %v", val.Name, val.City)
+		}
 	}
 }
 
@@ -10,5 +15,6 @@ func main() {
 	product := Product {
 		Name: "kayak", Category: "water sports", Price: 289,
 	}
-	printDetails(product)
+	customer := Customer {Name: "alice", City: "Boston"}
+	printDetails(product, customer)
 }
