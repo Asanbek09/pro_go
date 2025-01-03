@@ -6,25 +6,23 @@ import (
 	//"fmt"
 )
 
-func sendOverChannel(channel interface{}, data interface{}) {
-	channelVal := reflect.ValueOf(channel)
+func createChannelAndSend(data interface{}) interface{} {
 	dataVal := reflect.ValueOf(data)
-	if (channelVal.Kind() == reflect.Chan && dataVal.Kind() == reflect.Slice && channelVal.Type().Elem() == dataVal.Type().Elem()) {
+	channelType := reflect.ChanOf(reflect.BothDir, dataVal.Type().Elem())
+	channel := reflect.MakeChan(channelType, 1)
+	go func() {
 		for i := 0; i < dataVal.Len(); i++ {
-			val := dataVal.Index(i)
-			channelVal.Send(val)
+			channel.Send(dataVal.Index(i))
 		}
-		channelVal.Close()
-	} else {
-		Printfln("Unexpected types: %v, %v", channelVal.Type(), dataVal.Type())
-	}
+		channel.Close()
+	}()
+	return channel.Interface()
 }
 
 func main() {
 	values := []string {"Alice", "Bob", "Charlie", "Dora"}
-	channel := make(chan string)
+	channel := createChannelAndSend(values).(chan string)
 
-	go sendOverChannel(channel, values)
 	for {
 		if val, open := <- channel; open {
 			Printfln("Received value: %v", val)
