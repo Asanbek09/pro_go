@@ -6,15 +6,22 @@ import (
 	//"fmt"
 )
 
-func printMapContents(m interface{}) {
+func setMap(m interface{}, key interface{}, val interface{}) {
 	mapValue := reflect.ValueOf(m)
-	if (mapValue.Kind() == reflect.Map) {
-		iter := mapValue.MapRange()
-		for iter.Next() {
-			Printfln("Map Key: %v, Value: %v", iter.Key(), iter.Value())
-		}
+	keyValue := reflect.ValueOf(key)
+	valValue := reflect.ValueOf(val)
+	if (mapValue.Kind() == reflect.Map && mapValue.Type().Key() == keyValue.Type() && mapValue.Type().Elem() == valValue.Type()) {
+		mapValue.SetMapIndex(keyValue, valValue)
 	} else {
-		Printfln("Not a map")
+		Printfln("Not a map or mismatched types")
+	}
+}
+
+func removeFromMap(m interface{}, key interface{}) {
+	mapValue := reflect.ValueOf(m)
+	keyValue := reflect.ValueOf(key)
+	if (mapValue.Kind() == reflect.Map && mapValue.Type().Key() == keyValue.Type()) {
+		mapValue.SetMapIndex(keyValue, reflect.Value{})
 	}
 }
 
@@ -22,5 +29,10 @@ func main() {
 	pricesMap := map[string]float64 {
 		"kayak": 299, "jacket": 45.98, "soccer ball": 15.69,
 	}
-	printMapContents(pricesMap)
+	setMap(pricesMap, "Kayak", 56.00)
+	setMap(pricesMap, "Hat", 25.00)
+	removeFromMap(pricesMap, "jacket")
+	for k, v := range pricesMap {
+		Printfln("Key: %v, Value: %v", k, v)
+	}
 }
