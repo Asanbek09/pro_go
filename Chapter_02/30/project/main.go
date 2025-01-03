@@ -10,11 +10,11 @@ var mutex = sync.Mutex{}
 
 func doSum(count int, val *int) {
 	time.Sleep(time.Second)
+	mutex.Lock()
 	for i := 0; i < count; i ++ {
-		mutex.Lock()
 		*val++
-		mutex.Unlock()
 	}
+	mutex.Unlock()
 	waitGroup.Done()
 }
 
