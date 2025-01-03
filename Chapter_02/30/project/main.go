@@ -8,8 +8,15 @@ import (
 	"context"
 )
 
-func processRequest(ctx context.Context, wg *sync.WaitGroup, count int) {
+const (
+	countKey = iota
+	sleepPeriodKey
+)
+
+func processRequest(ctx context.Context, wg *sync.WaitGroup) {
 	total := 0
+	count := ctx.Value(countKey).(int)
+	sleepPeriodKey := ctx.Value(sleepPeriodKey).(time.Duration)
 	for i := 0; i < count; i++ {
 		select {
 		case <- ctx.Done():
@@ -22,7 +29,7 @@ func processRequest(ctx context.Context, wg *sync.WaitGroup, count int) {
 		default:
 			Printfln("Processing request: %v", total)
 			total++
-			time.Sleep(time.Millisecond * 250)
+			time.Sleep(sleepPeriodKey)
 		}
 	}
 	Printfln("Request processed ...%v", total)
@@ -35,7 +42,10 @@ func main() {
 	waitGroup.Add(1)
 	Printfln("Request dispatched...")
 	ctx, _ := context.WithTimeout(context.Background(), time.Second * 2)
-	go processRequest(ctx, &waitGroup, 10)
+	ctx = context.WithValue(ctx, countKey, 4)
+	ctx = context.WithValue(ctx, sleepPeriodKey, time.Millisecond * 250)
+
+	go processRequest(ctx, &waitGroup)
 	
 	//time.Sleep(time.Second)
 	//Printfln("Cancelling request")
