@@ -2,7 +2,8 @@ package main
 
 import (
 	"sort"
-	"fmt"
+	//"fmt"
+	"log"
 )
 
 func sortAndTotal(vals []int) (sorted []int, total int) {
@@ -19,6 +20,10 @@ func sortAndTotal(vals []int) (sorted []int, total int) {
 func main() {
 	nums := []int {90, 56, 82, 19, 32, 74}
 	sorted, total := sortAndTotal(nums)
-	fmt.Println("Sorted data:", sorted)
-	fmt.Println("Total:", total)
+	log.Print("Sorted data:", sorted)
+	log.Print("Total:", total)
+}
+
+func init() {
+	log.SetFlags(log.Lshortfile | log.Ltime)
 }
