@@ -4,17 +4,24 @@ import (
 	"testing"
 	"math/rand"
 	"time"
+	"fmt"
 )
 
 func BenchmarkSort(b *testing.B) {
 	rand.Seed(time.Now().UnixNano())
-	size := 250
-	data := make([]int, size)
-	b.ResetTimer()
-	for i := 0; i < size; i++ {
-		b.StopTimer()
-		data[i] = rand.Int()
+	sizes := []int {10, 100, 250}
+	for _, size := range sizes {
+		b.Run(fmt.Sprintf("Array size %v", size), func(subB *testing.B) {
+			data := make([]int, size)
+			subB.ResetTimer()
+			for i := 0; i < subB.N; i++ {
+				subB.StopTimer()
+				for j := 0; j < size; j++ {
+					data[j] = rand.Int()
+				}
+				subB.StartTimer()
+				sortAndTotal(data)
+			}
+		})
 	}
-	b.StartTimer()
-	sortAndTotal(data)
 }
