@@ -6,11 +6,14 @@ import (
 )
 
 var waitGroup = sync.WaitGroup{}
+var mutex = sync.Mutex{}
 
 func doSum(count int, val *int) {
 	time.Sleep(time.Second)
 	for i := 0; i < count; i ++ {
+		mutex.Lock()
 		*val++
+		mutex.Unlock()
 	}
 	waitGroup.Done()
 }
