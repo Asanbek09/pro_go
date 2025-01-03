@@ -18,14 +18,14 @@ func inspectTags(s interface{}, tagName string) {
 	}
 }
 
-type Person struct {
-	Name string `alias:"id"`
-	City string `alias:""`
-	Country string
-}
-
-
-
 func main() {
-	inspectTags(Person{}, "alias")
+	stringType := reflect.TypeOf("this is a string")
+
+	structType := reflect.StructOf([] reflect.StructField {
+		{Name: "Name", Type: stringType, Tag: `alias:"id"`},
+		{Name: "City", Type: stringType, Tag: `alias:""`},
+		{Name: "Country", Type: stringType},
+	})
+
+	inspectTags(reflect.New(structType), "alias")
 }
