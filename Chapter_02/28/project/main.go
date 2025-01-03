@@ -6,10 +6,13 @@ import (
 	//"fmt"
 )
 
-func describeMap(m interface{}) {
-	mapType := reflect.TypeOf(m)
-	if (mapType.Kind() == reflect.Map) {
-		Printfln("Key type: %v, Val type: %v", mapType.Key(), mapType.Elem())
+func printMapContents(m interface{}) {
+	mapValue := reflect.ValueOf(m)
+	if (mapValue.Kind() == reflect.Map) {
+		for _, keyVal := range mapValue.MapKeys() {
+			reflectedVal := mapValue.MapIndex(keyVal)
+			Printfln("Map Key: %v, Value: %v", keyVal, reflectedVal)
+		}
 	} else {
 		Printfln("Not a map")
 	}
@@ -19,5 +22,5 @@ func main() {
 	pricesMap := map[string]float64 {
 		"kayak": 299, "jacket": 45.98, "soccer ball": 15.69,
 	}
-	describeMap(pricesMap)
+	printMapContents(pricesMap)
 }
