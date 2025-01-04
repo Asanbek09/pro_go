@@ -10,7 +10,7 @@ var emptyPipeline RequestPipeline = func(*ComponentContext) {/* do nothing */}
 
 func CreatePipeline(components ...MiddlewareComponent) RequestPipeline {
 	f := emptyPipeline
-	for i := len(components); i >= 0; i-- {
+	for i := len(components) -1; i >= 0; i-- {
 		currentComponent := components[i]
 		nextFunc := f
 		f = func(context *ComponentContext) {
