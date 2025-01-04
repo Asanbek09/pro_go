@@ -13,7 +13,7 @@ func GetService(target interface{}) error {
 func GetServiceForContext(c context.Context, target interface{}) (err error) {
 	targetValue := reflect.ValueOf(target)
 	if (targetValue.Kind() == reflect.Ptr && targetValue.Elem().CanSet()) {
-		err = resolveServiceFromvalue(c, targetValue)
+		err = resolveServiceFromValue(c, targetValue)
 	} else {
 		err = errors.New("Type cannot be used as target")
 	}

@@ -29,7 +29,7 @@ func addService(life lifecycle, factoryFunc interface{}) (err error) {
 var contextReference = (*context.Context)(nil)
 var contextReferenceType = reflect.TypeOf(contextReference).Elem()
 
-func resolveServiceFromvalue(c context.Context, val reflect.Value) (err error) {
+func resolveServiceFromValue(c context.Context, val reflect.Value) (err error) {
 	serviceType := val.Elem().Type()
 	if serviceType == contextReferenceType {
 		val.Elem().Set(reflect.ValueOf(c))
@@ -71,7 +71,7 @@ func resolveFunctionArguments(c context.Context, f reflect.Value, otherArgs ...i
 	for ; i < len(params); i++ {
 		pType := f.Type().In(i)
 		pVal := reflect.New(pType)
-		err := resolveServiceFromvalue(c, pVal)
+		err := resolveServiceFromValue(c, pVal)
 		if err != nil {
 			panic(err)
 		}
