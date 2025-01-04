@@ -4,5 +4,8 @@
     },
     "logging": {
         "level": "debug"
+    },
+    "files": {
+        "path": "placeholder/files"
     }
 }
