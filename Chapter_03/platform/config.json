@@ -1,0 +1,8 @@
+{
+    "main": {
+        "message": "Hello, World! It is working!"
+    },
+    "logging": {
+        "level": "debug"
+    }
+}
