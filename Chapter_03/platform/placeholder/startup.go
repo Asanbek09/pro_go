@@ -8,6 +8,7 @@ import (
 	"sync"
 	"platform/http/handling"
 	"platform/sessions"
+	"platform/authorization"
 )
 
 func createPipeline() pipeline.RequestPipeline {
@@ -18,15 +19,22 @@ func createPipeline() pipeline.RequestPipeline {
 		&basic.ServicesComponent{},
 		&basic.StaticFileComponent{},
 		//&SimpleMessageComponent{},
+		authorization.NewAuthComponent(
+			"protected", authorization.NewRoleCondition("Administrator"), CounterHandler{},
+		),
 		handling.NewRouter(
 			handling.HandlerEntry{"", NameHandler{}}, 
 			handling.HandlerEntry{"", DayHandler{}},
-			handling.HandlerEntry{"", CounterHandler{}},).AddMethodAlias("/", NameHandler.GetNames),
+			//handling.HandlerEntry{"", CounterHandler{}},
+			handling.HandlerEntry{"", AuthenticationHandler{}},
+			).AddMethodAlias("/", NameHandler.GetNames),
 	)
 }
 
 func Start() {
 	sessions.RegisterSessionService()
+	authorization.RegisterDefaultSignInService()
+	authorization.RegisterDefaultUserService()
 	results, err := services.Call(http.Serve, createPipeline())
 	if(err == nil) {
 		(results[0].(*sync.WaitGroup)).Wait()
