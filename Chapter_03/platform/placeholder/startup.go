@@ -6,6 +6,7 @@ import (
 	"platform/pipeline/basic"
 	"platform/services"
 	"sync"
+	"platform/http/handling"
 )
 
 func createPipeline() pipeline.RequestPipeline {
@@ -14,7 +15,8 @@ func createPipeline() pipeline.RequestPipeline {
 		&basic.LoggingComponent{},
 		&basic.ErrorComponent{},
 		&basic.StaticFileComponent{},
-		&SimpleMessageComponent{},
+		//&SimpleMessageComponent{},
+		handling.NewRouter(handling.HandlerEntry{"", NameHandler{}},),
 	)
 }
 
