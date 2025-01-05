@@ -9,6 +9,7 @@ import (
 	"platform/services"
 	"reflect"
 	"strings"
+	"platform/http/actionresults"
 )
 
 func NewRouter(handlers ...HandlerEntry) *RouterComponent {
@@ -50,6 +51,16 @@ func (router *RouterComponent) invokeHandler(route Route, rawParams []string, co
 		services.PopulateForContext(context.Context(), structVal.Interface())
 		paramVals = append([]reflect.Value{structVal.Elem()}, paramVals...)
 		result := route.handlerMethod.Func.Call(paramVals)
+		if(len(result) > 0) {
+			if action, ok := result[0].Interface().(actionresults.ActionResult); ok {
+				err = services.PopulateForContext(context.Context(), action)
+				if (err == nil) {
+					err = action.Execute(&actionresults.ActionContext{context.Context(), context.ResponseWriter})
+				}
+			} else {
+				io.WriteString(context.ResponseWriter, fmt.Sprint(result[0].Interface()))
+			}
+		}
 		io.WriteString(context.ResponseWriter, fmt.Sprint(result[0].Interface()))
 	}
 	return err
