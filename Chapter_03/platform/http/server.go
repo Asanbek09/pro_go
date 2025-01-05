@@ -14,9 +14,8 @@ type pipelineAdaptor struct {
 }
 
 func (p pipelineAdaptor) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
-	p.ProcessRequest(request, writer)
+        p.ProcessRequest(request, writer)
 }
-
 func Serve(pl pipeline.RequestPipeline, cfg config.Configuration, logger logging.Logger) *sync.WaitGroup {
 	wg := sync.WaitGroup{}
 

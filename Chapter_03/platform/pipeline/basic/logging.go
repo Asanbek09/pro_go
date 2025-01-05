@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"platform/logging"
 	"platform/pipeline"
-	"platform/services"
+	//"platform/services"
 )
 
 type LoggingResponseWriter struct {
@@ -18,28 +18,22 @@ func (w *LoggingResponseWriter) WriteHeader(statusCode int) {
 }
 
 func (w *LoggingResponseWriter) Write(b []byte) (int, error) {
-	if (w.statusCode == 0) {
+	if w.statusCode == 0 {
 		w.statusCode = http.StatusOK
 	}
 	return w.ResponseWriter.Write(b)
 }
 
-type LoggingComponent struct {}
+type LoggingComponent struct{}
+
+func (lc *LoggingComponent) ImplementsProcessRequestWithServices() {}
 
 func (lc *LoggingComponent) Init() {}
 
-func (lc *LoggingComponent) ProcessRequest(ctx *pipeline.ComponentContext, next func(*pipeline.ComponentContext)) {
-	var logger logging.Logger
-	err := services.GetServiceForContext(ctx.Request.Context(), &logger)
-	if (err != nil) {
-		ctx.Error(err)
-		return
-	}
-
+func (lc *LoggingComponent) ProcessRequestWithServices(ctx *pipeline.ComponentContext, next func(*pipeline.ComponentContext), logger logging.Logger) {
 	loggingWriter := LoggingResponseWriter{0, ctx.ResponseWriter}
 	ctx.ResponseWriter = &loggingWriter
-
-	logger.Infof("REQ -- %v --- %v", ctx.Request.Method, ctx.Request.URL)
+	logger.Infof("REQ --- %v - %v", ctx.Request.Method, ctx.Request.URL)
 	next(ctx)
-	logger.Infof("RSP %v %v", loggingWriter.statusCode, ctx.Request.URL)
+	logger.Infof("RSP --- %v - %v", loggingWriter.statusCode, ctx.Request.URL)
 }
