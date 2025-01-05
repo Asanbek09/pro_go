@@ -1,9 +1,9 @@
 package services
 
 import (
-	"reflect"
 	"context"
 	"fmt"
+	"reflect"
 )
 
 type BindingMap struct {
@@ -15,10 +15,10 @@ var services = make(map[reflect.Type]BindingMap)
 
 func addService(life lifecycle, factoryFunc interface{}) (err error) {
 	factoryFuncType := reflect.TypeOf(factoryFunc)
-	if (factoryFuncType.Kind() == reflect.Func && factoryFuncType.NumOut() == 1) {
+	if factoryFuncType.Kind() == reflect.Func && factoryFuncType.NumOut() == 1 {
 		services[factoryFuncType.Out(0)] = BindingMap{
 			factoryFunc: reflect.ValueOf(factoryFunc),
-			lifecycle: life,
+			lifecycle:   life,
 		}
 	} else {
 		err = fmt.Errorf("Type cannot be used as service: %v", factoryFuncType)
@@ -34,7 +34,7 @@ func resolveServiceFromValue(c context.Context, val reflect.Value) (err error) {
 	if serviceType == contextReferenceType {
 		val.Elem().Set(reflect.ValueOf(c))
 	} else if binding, found := services[serviceType]; found {
-		if (binding.lifecycle == Scoped) {
+		if binding.lifecycle == Scoped {
 			resolveScopedService(c, val, binding)
 		} else {
 			val.Elem().Set(invokeFunction(c, binding.factoryFunc)[0])
@@ -47,9 +47,9 @@ func resolveServiceFromValue(c context.Context, val reflect.Value) (err error) {
 
 func resolveScopedService(c context.Context, val reflect.Value, binding BindingMap) (err error) {
 	sMap, ok := c.Value(ServiceKey).(serviceMap)
-	if (ok) {
+	if ok {
 		serviceVal, ok := sMap[val.Type()]
-		if (!ok) {
+		if !ok {
 			serviceVal = invokeFunction(c, binding.factoryFunc)[0]
 			sMap[val.Type()] = serviceVal
 		}
@@ -60,11 +60,12 @@ func resolveScopedService(c context.Context, val reflect.Value, binding BindingM
 	return
 }
 
-func resolveFunctionArguments(c context.Context, f reflect.Value, otherArgs ...interface{}) []reflect.Value {
+func resolveFunctionArguments(c context.Context, f reflect.Value,
+	otherArgs ...interface{}) []reflect.Value {
 	params := make([]reflect.Value, f.Type().NumIn())
 	i := 0
-	if (otherArgs != nil) {
-		for ; i < len(otherArgs); i ++ {
+	if otherArgs != nil {
+		for ; i < len(otherArgs); i++ {
 			params[i] = reflect.ValueOf(otherArgs[i])
 		}
 	}
@@ -80,6 +81,7 @@ func resolveFunctionArguments(c context.Context, f reflect.Value, otherArgs ...i
 	return params
 }
 
-func invokeFunction(c context.Context, f reflect.Value, otherArgs ...interface{}) []reflect.Value {
+func invokeFunction(c context.Context, f reflect.Value,
+	otherArgs ...interface{}) []reflect.Value {
 	return f.Call(resolveFunctionArguments(c, f, otherArgs...))
 }
