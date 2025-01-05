@@ -7,6 +7,7 @@ import (
 	"platform/services"
 	"sync"
 	"platform/http/handling"
+	"platform/sessions"
 )
 
 func createPipeline() pipeline.RequestPipeline {
@@ -14,15 +15,18 @@ func createPipeline() pipeline.RequestPipeline {
 		&basic.ServicesComponent{},
 		&basic.LoggingComponent{},
 		&basic.ErrorComponent{},
+		&basic.ServicesComponent{},
 		&basic.StaticFileComponent{},
 		//&SimpleMessageComponent{},
 		handling.NewRouter(
 			handling.HandlerEntry{"", NameHandler{}}, 
-			handling.HandlerEntry{"", DayHandler{}},).AddMethodAlias("/", NameHandler.GetNames),
+			handling.HandlerEntry{"", DayHandler{}},
+			handling.HandlerEntry{"", CounterHandler{}},).AddMethodAlias("/", NameHandler.GetNames),
 	)
 }
 
 func Start() {
+	sessions.RegisterSessionService()
 	results, err := services.Call(http.Serve, createPipeline())
 	if(err == nil) {
 		(results[0].(*sync.WaitGroup)).Wait()
